@@ -1,0 +1,56 @@
+/* temp fix for this issue https://github.com/plotly/dash-docs/issues/612 */
+td.CalendarDay {
+    padding: 0;
+  }
+
+.kpi td {
+    font-size: x-large;
+    color: darkgreen;
+
+}
+
+.kpi th, .kpi td {
+    text-align: center;
+    padding: 5px 25px;
+}
+
+.kpi th {
+    border-top: 1px solid #E1E1E1;
+    border-bottom: 0px;
+}
+
+.kpi td {
+    border-top: 0px;
+    border-bottom: 1px solid #E1E1E1;
+}
+
+.kpi th:first-child, .kpi td:first-child {
+    padding-left: 12px;
+}
+
+.kpi th:last-child, .kpi td:last-child {
+    padding-right: 12px;
+}
+
+.preview {
+    font-size: small;
+    white-space: nowrap;
+}
+
+.preview th, .preview td {
+    padding: 2px 5px;
+    text-align: left;
+}
+
+.preview th{
+    border-top: 1px solid #E1E1E1;
+}
+
+/*
+._dash-undo-redo {
+    display: none;
+  }
+
+.button, button {
+    border: 2px solid darkgreen;
+}*/
