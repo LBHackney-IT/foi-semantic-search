@@ -24,6 +24,7 @@ def strip_response(r):
         for k, v in d.items():
             s += strip_element(v)
     return s
+
 # Start with simple unweighted average. Could pre normalise here so
 # compare_vectors is quicker when handling user input
 def sent2vec(sentence, model):
