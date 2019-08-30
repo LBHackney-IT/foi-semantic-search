@@ -3,3 +3,6 @@ __pycache__/
 df_min.pickle
 df_viz.pickle
 /models/word2vec.model
+.gcloudignore
+app.yaml
+
