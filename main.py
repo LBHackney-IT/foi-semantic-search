@@ -7,27 +7,19 @@ import dash_html_components as html
 import flask
 import pandas as pd
 import plotly.graph_objs as go
-import gensim
 import functions
 import config
-from sklearn.manifold import TSNE
 import plotly.express as px
-from textwrap import dedent
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
 
-# Word2vec model
-model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
-vocab = list(model_word.wv.vocab)
-
-# Reduce dimensions for plotting
-X = model_word[vocab]
-tsne = TSNE(n_components=2)
-X_tsne = tsne.fit_transform(X)
-df_vz = pd.DataFrame(X_tsne, index=vocab, columns=['x', 'y'])
-
-df_vz = df_vz.reset_index()
+df = pd.read_pickle(config.viz_df_filename)
+# need to index on the vocab but also need to pass plotly a column
+# name to label the scatterplot, so will duplicate the vocab field
+# until can find a better way
+df['index'] = df['vocab']
+df = df.set_index('index')
 
 layout_children = [
     html.H2('FOI search/similarity'),
@@ -38,7 +30,7 @@ layout_children = [
     dcc.Dropdown(
         id='word-dropdown',
         placeholder='Search words in model vocabulary...',
-        options=[{'value': i, 'label': i} for i in vocab],
+        options=[{'value': i, 'label': i} for i in df.index],
         multi=False
         ),
     html.Div(id='most-similar')
@@ -52,7 +44,8 @@ app.layout = html.Div(children=layout_children)
 )
 def update_most_similar(chosen_word):
     if chosen_word:
-        similar = model_word.wv.most_similar(chosen_word)
+        #similar = model_word.wv.most_similar(chosen_word)
+        similar = df.loc[chosen_word]['most_similar']
         return html.Table([html.Tr(html.Td(' '.join(map(str, i)))) for i in similar])
 
 @app.callback(
@@ -62,7 +55,7 @@ def update_most_similar(chosen_word):
 def make_figure(chosen_word):
     inds = []
     inds.append(chosen_word)
-    fig = px.scatter(data_frame=df_vz, x='x', y='y', text='index')
+    fig = px.scatter(data_frame=df, x='x', y='y', text='vocab')
     #fig.data[0].update(selectedpoints=inds,selected=dict(marker=dict(color='red')),unselected=dict(marker=dict(color='blue')))
     return fig
 
