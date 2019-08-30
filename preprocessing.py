@@ -4,15 +4,14 @@ from pandas.io.json import json_normalize
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
-from nltk.tokenize import sent_tokenize
 import functions
 import config
 
 nltk.download('stopwords')
 nltk.download('punkt')
 
-# Read json files from infreemation reporting API,
-# new ones added periodically
+# Read json files from infreemation reporting API, new ones added
+# periodically
 base_path = config.data_path
 filename = 'infreemation-dump-'
 df = pd.DataFrame()
@@ -24,6 +23,11 @@ for i in range(1,6):
     data = json.loads(data)
     dff = json_normalize(data['published']['request'])
     df = df.append(dff)
+    df = df.reset_index(drop=True)
+
+# Need to get the FOI ID from the url field
+for i in df.index:
+  df.at[i, 'id'] = functions.extract_id(df.iloc[i]['url'])
 
 # Strip HTML from requestbody
 for i in df.index:
