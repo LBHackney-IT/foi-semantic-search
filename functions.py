@@ -2,6 +2,10 @@ import html
 import unicodedata
 import re
 
+def extract_id(s):
+    regex = re.compile(r'\d*$')
+    return regex.findall(s)[0]
+
 def strip_element(s):
     regex = re.compile(r'<[^>]+>')
     s = html.unescape(s)
