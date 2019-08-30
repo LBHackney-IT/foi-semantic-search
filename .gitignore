@@ -1,0 +1,4 @@
+__pycache__/
+*.bat
+df_min.pickle
+/models/word2vec.model
