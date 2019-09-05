@@ -28,6 +28,14 @@ def strip_response(r):
             s += strip_element(v)
     return s
 
+def generate_request_preview(request, num_words):
+  request = strip_element(request)
+  l = request.split(' ', num_words)
+  l = l[0:num_words]
+  preview = ' '.join(l)
+  preview = preview + '...'
+  return preview
+
 # Start with simple unweighted average. Could pre normalise here so
 # compare_vectors is quicker when handling user input
 def sent2vec(sentence, model):
