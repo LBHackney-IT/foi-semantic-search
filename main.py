@@ -111,10 +111,7 @@ def update_most_similar(chosen_word):
     [Input('word-dropdown', 'value')]
 )
 def make_figure(chosen_word):
-    inds = []
-    inds.append(chosen_word)
     fig = px.scatter(data_frame=df, x='x', y='y', text='vocab')
-    #fig.data[0].update(selectedpoints=inds,selected=dict(marker=dict(color='red')),unselected=dict(marker=dict(color='blue')))
     return fig
 
 if __name__ == '__main__':
