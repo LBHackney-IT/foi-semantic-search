@@ -40,13 +40,18 @@ def generate_request_preview(request, num_words):
 # compare_vectors is quicker when handling user input
 def sent2vec(sentence, model):
     words = word_tokenize(sentence)
+    # If sentence is empty, need to return a zeroed numpy array of the
+    # correct shape
+    dimensions = model.wv.vector_size
     if words == []:
-        return
+        return np.zeros((1, dimensions))
     vocab = list(model.wv.vocab)
     # Need to remove any words that aren't in the vocab
     safe_words = [word for word in words if word in vocab]
     word_vec_list = []
-    if safe_words != []:
+    if safe_words == []:
+      return np.zeros((1, dimensions))
+    else:
         for word in safe_words:
             word_vec_list.append(model[word])
         return np.mean(word_vec_list, axis=0)
