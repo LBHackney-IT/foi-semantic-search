@@ -102,7 +102,6 @@ def update_search_results(query, n_clicks):
 )
 def update_most_similar(chosen_word):
     if chosen_word:
-        #similar = model_word.wv.most_similar(chosen_word)
         similar = df.loc[chosen_word]['most_similar']
         return html.Table([html.Tr(html.Td(' '.join(map(str, i)))) for i in similar])
 
