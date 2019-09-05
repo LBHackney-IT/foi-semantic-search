@@ -20,6 +20,7 @@ from dash.exceptions import PreventUpdate
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
 
+# vocab with dimensionality reduction and most similar already calculated
 df = pd.read_pickle(config.viz_df_filename)
 # need to index on the vocab but also need to pass plotly a column
 # name to label the scatterplot, so will duplicate the vocab field
