@@ -2,7 +2,10 @@ import html
 import unicodedata
 import re
 import numpy as np
+import nltk
 from nltk.tokenize import word_tokenize
+
+nltk.data.path.append("./nltk_data/")
 
 def extract_id(s):
     regex = re.compile(r'\d*$')
