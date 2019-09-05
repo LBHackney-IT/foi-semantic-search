@@ -10,6 +10,12 @@ import plotly.graph_objs as go
 import functions
 import config
 import plotly.express as px
+import gensim
+import nltk
+from nltk.tokenize import word_tokenize
+from sklearn.metrics.pairwise import cosine_similarity
+from dash.exceptions import PreventUpdate
+
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
@@ -20,6 +26,11 @@ df = pd.read_pickle(config.viz_df_filename)
 # until can find a better way
 df['index'] = df['vocab']
 df = df.set_index('index')
+
+# Word2vec model
+model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
+
+df_subjects = pd.read_pickle(config.subjects_lookup_df_filename)
 
 layout_children = [
     html.H2('FOI search/similarity'),
@@ -33,10 +44,57 @@ layout_children = [
         options=[{'value': i, 'label': i} for i in df.index],
         multi=False
         ),
-    html.Div(id='most-similar')
+    html.Div(id='most-similar'),
+    html.Br(),
+    html.H5('What do you want to know?'),
+    dcc.Textarea(
+        id='search-textarea',
+        placeholder='Your request...'    
+    ),
+    html.Br(),
+    html.Button('Search disclosure log', id='search_log_button'),
+    html.Div(id='results-list'),
 ]
 
 app.layout = html.Div(children=layout_children)
+
+@app.callback(
+    Output('results-list', 'children'),
+    [Input('search-textarea', 'value'),
+     Input('search_log_button', 'n_clicks')]
+)
+def update_search_results(query, n_clicks):
+    if not n_clicks:
+        return html.Div()
+    ctx = dash.callback_context
+    input_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    if not (ctx.triggered and input_id == 'search_log_button'):
+        raise PreventUpdate
+    else:
+        words = word_tokenize(query)
+        words = [word.lower() for word in words if word.isalpha()]
+        rejoined = ' '.join(words)
+        query_vec = functions.sent2vec(rejoined, model_word)
+        df_results = df_subjects[['subject', 'request_preview', 'url']]
+        df_results['cosine_similarity'] = df_subjects.apply(lambda x: cosine_similarity(query_vec.reshape(1, -1), x['subject_embedding'].reshape(1, -1)), axis=1)
+        df_results = df_results.sort_values(by=['cosine_similarity'])
+        df_results = df_results[['subject', 'request_preview', 'url']].tail()
+        rows = []
+        for i in range(len(df_results)):
+            row = []
+            for col in df_results.columns:
+                value = df_results.iloc[i][col]
+                if col == 'url':
+                    cell = html.Td(html.A(href=value, children=value))
+                else:
+                    cell = html.Td(children=value)
+                row.append(cell)
+            rows.append(html.Tr(row))
+        return html.Table(
+        # Header
+        [html.Tr([html.Th(col) for col in df_results.columns])] +
+        rows
+        )
 
 @app.callback(
     Output('most-similar', 'children'),
