@@ -38,7 +38,7 @@ stop_words = set(stopwords.words('english'))
 
 def prepare_text(s):
     words = word_tokenize(s)
-    words=[word.lower() for word in words if word.isalpha()]
+    words = [word.lower() for word in words if word.isalpha()]
     filtered_sentence = [] 
     for w in words: 
         if w not in stop_words: 
