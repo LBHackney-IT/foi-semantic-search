@@ -16,6 +16,7 @@ from nltk.tokenize import word_tokenize
 from sklearn.metrics.pairwise import cosine_similarity
 from dash.exceptions import PreventUpdate
 
+nltk.data.path.append("./nltk_data/")
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
