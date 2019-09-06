@@ -59,7 +59,11 @@ layout_children = [
     ),
     html.Br(),
     html.Button('Submit', id='search_log_button'),
+    html.Br(),
     html.Div(id='results-list'),
+    html.Br(),
+    html.Br(),
+    html.Hr(),
 ]
 
 app.layout = html.Div(children=layout_children)
