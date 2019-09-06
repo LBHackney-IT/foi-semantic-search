@@ -18,6 +18,7 @@ X_tsne = tsne.fit_transform(X)
 df = pd.DataFrame(X_tsne, index=vocab, columns=['x', 'y'])
 df = df.reset_index()
 df.columns = ['vocab', 'x', 'y']
+df = df.sort_values(by=['vocab'])
 
 # Cache most similar words for all words in vocab
 df['most_similar'] = df.apply(lambda x: model_word.wv.most_similar(x['vocab']), axis=1)
