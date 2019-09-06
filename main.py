@@ -36,9 +36,8 @@ df_subjects = pd.read_pickle(config.subjects_lookup_df_filename)
 
 layout_children = [
     html.H2('FOI search/similarity'),
-    html.Div("Word2vec model, corpus is request subject lines from Hackney's disclosure log"),
+    html.Div("Based on a word2vec model, corpus is request subject lines from Hackney's disclosure log"),
     dcc.Graph(id="graph", style={"width": "75%", "display": "inline-block"}),
-    html.Br(),
     html.H5('Most similar to:'),
     dcc.Dropdown(
         id='word-dropdown',
@@ -48,13 +47,18 @@ layout_children = [
         ),
     html.Div(id='most-similar'),
     html.Br(),
+    html.Hr(),
     html.H5('What do you want to know?'),
+    html.Div('Returns suggestions from the disclosure log. Based on cosine similarity of vectors of submitted sentence vs request subjects'),
+    html.Br(),
     dcc.Textarea(
         id='search-textarea',
-        placeholder='Your request...'    
+        placeholder='Your request...',
+        rows=50,
+        style={'width': '50%'}   
     ),
     html.Br(),
-    html.Button('Search disclosure log', id='search_log_button'),
+    html.Button('Submit', id='search_log_button'),
     html.Div(id='results-list'),
 ]
 
