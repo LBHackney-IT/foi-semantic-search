@@ -87,8 +87,8 @@ def update_search_results(query, n_clicks):
         query_vec = functions.sent2vec(rejoined, model_word)
         df_results = df_subjects[['subject', 'request_preview', 'url']]
         df_results['cosine_similarity'] = df_subjects.apply(lambda x: cosine_similarity(query_vec.reshape(1, -1), x['subject_embedding'].reshape(1, -1)), axis=1)
-        df_results = df_results.sort_values(by=['cosine_similarity'])
-        df_results = df_results[['subject', 'request_preview', 'url']].tail()
+        df_results = df_results.sort_values(by=['cosine_similarity'], ascending=False)
+        df_results = df_results.head()
         rows = []
         for i in range(len(df_results)):
             row = []
