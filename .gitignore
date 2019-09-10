@@ -5,4 +5,5 @@ df_viz.pickle
 /models/word2vec.model
 .gcloudignore
 app.yaml
+/assets/g-analytics.js
 
