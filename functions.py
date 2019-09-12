@@ -4,6 +4,7 @@ import re
 import numpy as np
 import nltk
 from nltk.tokenize import word_tokenize
+from sklearn.metrics.pairwise import cosine_similarity
 
 nltk.data.path.append("./nltk_data/")
 
@@ -55,3 +56,15 @@ def sent2vec(sentence, model):
         for word in safe_words:
             word_vec_list.append(model[word])
         return np.mean(word_vec_list, axis=0)
+
+def search_log(query, model, df_lookup):
+    words = word_tokenize(query)
+    words = [word.lower() for word in words if word.isalpha()]
+    rejoined = ' '.join(words)
+    query_vec = sent2vec(rejoined, model)
+    df_results = df_lookup[['subject', 'request_preview', 'url', 'id']]
+    df_results['cosine_similarity'] = df_lookup.apply(lambda x: cosine_similarity(query_vec.reshape(1, -1), x['subject_embedding'].reshape(1, -1)), axis=1)
+    df_results = df_results.sort_values(by=['cosine_similarity'], ascending=False)
+    # cast cosine_similarity to string for display
+    df_results['cosine_similarity'] = df_results.apply(lambda x: str(x['cosine_similarity']), axis=1)
+    return df_results
