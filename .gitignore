@@ -6,4 +6,5 @@ df_viz.pickle
 .gcloudignore
 app.yaml
 /assets/g-analytics.js
+/foi-model-env/
 
