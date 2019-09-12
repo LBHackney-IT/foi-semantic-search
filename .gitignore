@@ -7,4 +7,5 @@ df_viz.pickle
 app.yaml
 /assets/g-analytics.js
 /foi-model-env/
+.vscode
 
