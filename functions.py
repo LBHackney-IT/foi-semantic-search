@@ -2,7 +2,11 @@ import html
 import unicodedata
 import re
 import numpy as np
+import nltk
 from nltk.tokenize import word_tokenize
+from sklearn.metrics.pairwise import cosine_similarity
+
+nltk.data.path.append("./nltk_data/")
 
 def extract_id(s):
     regex = re.compile(r'\d*$')
@@ -25,17 +29,42 @@ def strip_response(r):
             s += strip_element(v)
     return s
 
+def generate_request_preview(request, num_words):
+  request = strip_element(request)
+  l = request.split(' ', num_words)
+  l = l[0:num_words]
+  preview = ' '.join(l)
+  preview = preview + '...'
+  return preview
+
 # Start with simple unweighted average. Could pre normalise here so
 # compare_vectors is quicker when handling user input
 def sent2vec(sentence, model):
     words = word_tokenize(sentence)
+    # If sentence is empty, need to return a zeroed numpy array of the
+    # correct shape
+    dimensions = model.wv.vector_size
     if words == []:
-        return
+        return np.zeros((1, dimensions))
     vocab = list(model.wv.vocab)
     # Need to remove any words that aren't in the vocab
     safe_words = [word for word in words if word in vocab]
     word_vec_list = []
-    if safe_words != []:
+    if safe_words == []:
+      return np.zeros((1, dimensions))
+    else:
         for word in safe_words:
             word_vec_list.append(model[word])
         return np.mean(word_vec_list, axis=0)
+
+def search_log(query, model, df_lookup):
+    words = word_tokenize(query)
+    words = [word.lower() for word in words if word.isalpha()]
+    rejoined = ' '.join(words)
+    query_vec = sent2vec(rejoined, model)
+    df_results = df_lookup[['subject', 'request_preview', 'url', 'id']]
+    df_results['cosine_similarity'] = df_lookup.apply(lambda x: cosine_similarity(query_vec.reshape(1, -1), x['subject_embedding'].reshape(1, -1)), axis=1)
+    df_results = df_results.sort_values(by=['cosine_similarity'], ascending=False)
+    # cast cosine_similarity to string for display
+    df_results['cosine_similarity'] = df_results.apply(lambda x: str(x['cosine_similarity']), axis=1)
+    return df_results
