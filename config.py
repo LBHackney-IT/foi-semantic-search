@@ -1,8 +1,13 @@
 data_path = '../infreemation-data/'
 model_path = 'models/'
+lookups_path = 'search-lookups/'
+viz_path = 'viz/'
 preprocessed_filename = 'infreemation-preprocessed.pickle'
-subjects_lookup_df_filename = 'df_subjects.pickle'
-sentence_embeddings_lookup_filename = 'sentence_embeddings_lookup.pickle'
-word_model_filename = 'word2vec.model'
-viz_df_filename = 'df_viz.pickle'
+search_lookup_filename = '02-df-lookup-subjects-requestbodies.pickle'
+#sentence_embeddings_lookup_filename = 'sentence_embeddings_lookup.pickle'
+word_model_filename = '02-word2vec-subjects-requestbodies.model'
+viz_df_filename = '02-df-viz.pickle'
+preprocessed_filepath = data_path + preprocessed_filename
 word_model_filepath = model_path + word_model_filename
+search_lookup_filepath = lookups_path + search_lookup_filename
+viz_df_filepath = viz_path + viz_df_filename
