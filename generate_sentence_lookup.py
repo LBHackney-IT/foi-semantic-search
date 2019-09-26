@@ -14,7 +14,7 @@ df['request_preview'] = df.apply(lambda x: functions.generate_request_preview(x[
 df = df[['subject','url','subject_prepared','id', 'request_preview']]
 
 # Generate sentence embeddings
-df['subject_embedding'] = df.apply(lambda x: functions.sent2vec(sentence=x['subject_prepared'],model=model_word), axis=1)
+df['sentence_embedding'] = df.apply(lambda x: functions.sent2vec(sentence=x['subject_requestbody'],model=model_word), axis=1)
 
 # Store the dataframe
 df.reset_index(drop=True).to_pickle(config.search_lookup_filepath)
