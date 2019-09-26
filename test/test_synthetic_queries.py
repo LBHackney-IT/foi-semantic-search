@@ -10,7 +10,7 @@ import config
 model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
 df_subjects = pd.read_pickle(config.subjects_lookup_df_filename)
 
-# Pass paraphrased synthetic queries to search function; the expected
+# Pass synthetic queries to search function; the expected
 # result document should appear in the top n results
 @pytest.mark.parametrize("input_query,expected_ID", queries)
 def test_eval(input_query, expected_ID):
