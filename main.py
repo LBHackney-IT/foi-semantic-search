@@ -22,7 +22,7 @@ server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
 
 # vocab with dimensionality reduction and most similar already calculated
-df = pd.read_pickle(config.viz_df_filename)
+df = pd.read_pickle(config.viz_df_filepath)
 # need to index on the vocab but also need to pass plotly a column
 # name to label the scatterplot, so will duplicate the vocab field
 # until can find a better way
@@ -32,7 +32,7 @@ df = df.set_index('index')
 # Word2vec model
 model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
 
-df_subjects = pd.read_pickle(config.subjects_lookup_df_filename)
+df_subjects = pd.read_pickle(config.search_lookup_filepath)
 
 layout_children = [
     html.H2('FOI search/similarity'),
