@@ -4,6 +4,7 @@ import re
 import numpy as np
 import nltk
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 from sklearn.metrics.pairwise import cosine_similarity
 
 nltk.data.path.append("./nltk_data/")
@@ -28,6 +29,20 @@ def strip_response(r):
         for k, v in d.items():
             s += strip_element(v)
     return s
+
+# Prepare text: make lowercase, remove punctuation, remove stopwords
+stop_words = set(stopwords.words('english'))
+
+def prepare_text(s):
+    words = word_tokenize(s)
+    words = [word.lower() for word in words if word.isalpha()]
+    filtered_sentence = [] 
+    for w in words: 
+        if w not in stop_words: 
+            filtered_sentence.append(w)
+    rejoined_sentence = ' '
+    rejoined_sentence = rejoined_sentence.join(filtered_sentence)
+    return rejoined_sentence
 
 def generate_request_preview(request, num_words):
   request = strip_element(request)
