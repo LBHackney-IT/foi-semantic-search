@@ -3,7 +3,7 @@ import functions
 import config
 import gensim
 
-# Word2vec model
+# Load model
 model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
 
 df = pd.read_pickle(config.preprocessed_filepath)
