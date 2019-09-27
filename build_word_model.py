@@ -14,7 +14,7 @@ df = pd.read_pickle(filepath)
 
 # Prepare subject field. We'll treat these as single sentences (most are).
 subject_sentences = df['subject_prepared'].tolist()
-tokenized_subjects = [[]]
+tokenized_subjects = []
 for s in subject_sentences:
     tokenized_subjects.append(word_tokenize(s))
 
@@ -23,7 +23,7 @@ requestbody_sentences = []
 for i in df.index:
   l = df.iloc[i]['requestbody_prepared']
   requestbody_sentences = requestbody_sentences + l
-  tokenized_requestbodies = [[]]
+  tokenized_requestbodies = []
 for s in requestbody_sentences:
   tokenized_requestbodies.append(word_tokenize(s))
 
