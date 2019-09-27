@@ -23,4 +23,4 @@ df = df.sort_values(by=['vocab'])
 # Cache most similar words for all words in vocab
 df['most_similar'] = df.apply(lambda x: model_word.wv.most_similar(x['vocab']), axis=1)
 
-df.to_pickle(config.viz_df_filename)
+df.to_pickle(config.viz_df_filepath)
