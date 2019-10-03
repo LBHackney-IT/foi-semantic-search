@@ -85,6 +85,7 @@ def update_search_results(query, n_clicks):
         raise PreventUpdate
     else:
         df_results = functions.search_log(query, model_word, df_subjects)
+        df_results = functions.search_log(query, model_word, df_subjects, dictionary, tfidf)
         df_results = df_results.head()
         rows = []
         for i in range(len(df_results)):
