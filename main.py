@@ -89,7 +89,7 @@ def update_search_results(query, n_clicks):
             for col in df_results.columns:
                 value = df_results.iloc[i][col]
                 if col == 'url':
-                    cell = html.Td(html.A(href=value, children=value))
+                    cell = html.Td(html.A(href=value, target="_blank", children=value))
                 else:
                     cell = html.Td(children=value)
                 row.append(cell)
