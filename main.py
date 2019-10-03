@@ -32,6 +32,9 @@ df = df.set_index('index')
 # Word2vec model
 model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
 
+tfidf = gensim.models.TfidfModel.load(config.tfidf_filepath)
+dictionary = gensim.corpora.Dictionary([list(model_word.wv.vocab.keys())])
+
 df_subjects = pd.read_pickle(config.search_lookup_filepath)
 
 layout_children = [
