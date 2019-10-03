@@ -5,6 +5,7 @@ from nltk.tokenize import sent_tokenize
 import gensim
 import functions
 import config
+import pickle
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -29,6 +30,10 @@ for s in requestbody_sentences:
 
 # Put tokenized subjects and request bodies together
 all_tokenized = tokenized_subjects + tokenized_requestbodies
+
+# Save for use elsewhere
+with open(config.tokenized_filepath, 'wb') as f:
+    pickle.dump(all_tokenized, f)
 
 # Build the model
 model_word = gensim.models.Word2Vec(all_tokenized, min_count=1, iter=100)
