@@ -52,31 +52,37 @@ def generate_request_preview(request, num_words):
   preview = preview + '...'
   return preview
 
-# Start with simple unweighted average. Could pre normalise here so
-# compare_vectors is quicker when handling user input
-def sent2vec(sentence, model):
+# TF-IDF weighted average of the vectors of the input words
+def sent2vec(sentence, model, dictionary, tfidf):
     words = word_tokenize(sentence)
-    # If sentence is empty, need to return a zeroed numpy array of the
-    # correct shape
     dimensions = model.wv.vector_size
     if words == []:
         return np.zeros((1, dimensions))
     vocab = list(model.wv.vocab)
     # Need to remove any words that aren't in the vocab
     safe_words = [word for word in words if word in vocab]
+    # Deduplicate
+    safe_words = list(set(safe_words))
     word_vec_list = []
     if safe_words == []:
-      return np.zeros((1, dimensions))
-    else:
-        for word in safe_words:
-            word_vec_list.append(model[word])
-        return np.mean(word_vec_list, axis=0)
+        return np.zeros((1, dimensions))
+    for word in safe_words:
+        word_vec_list.append(model[word])
+    weighting = tfidf[dictionary.doc2bow(safe_words)]
+    # Need to loop through because these lists are ordered differently
+    weighted_vec_list = []
+    for tup in weighting:
+      word = dictionary[tup[0]]
+      weight = tup[1]
+      weighted_vec = model[word] * weight
+      weighted_vec_list.append(weighted_vec)
+    return np.mean(weighted_vec_list, axis=0)
 
-def search_log(query, model, df_lookup):
+def search_log(query, model, df_lookup, dictionary, tfidf):
     words = word_tokenize(query)
     words = [word.lower() for word in words if word.isalpha()]
     rejoined = ' '.join(words)
-    query_vec = sent2vec(rejoined, model)
+    query_vec = sent2vec(rejoined, model, dictionary, tfidf)
     df_results = df_lookup[['subject', 'request_preview', 'url', 'id']]
     df_results['cosine_similarity'] = df_lookup.apply(lambda x: cosine_similarity(query_vec.reshape(1, -1), x['sentence_embedding'].reshape(1, -1)), axis=1)
     df_results = df_results.sort_values(by=['cosine_similarity'], ascending=False)
