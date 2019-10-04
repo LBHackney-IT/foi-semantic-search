@@ -6,6 +6,11 @@ import pandas as pd
 from pydantic import BaseModel
 
 app = FastAPI()
+app = FastAPI(
+    title="Hackney FOI semantic search API",
+    description="Search the London Borough of Hackney's public Freedom of Information disclosure log.",
+    version="1",
+)
 
 class FoiQuery(BaseModel):
     query: str

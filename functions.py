@@ -78,7 +78,7 @@ def sent2vec(sentence, model, dictionary, tfidf):
       weighted_vec_list.append(weighted_vec)
     return np.mean(weighted_vec_list, axis=0)
 
-def search_log(query, model, df_lookup, dictionary, tfidf):
+def search_log(query, num_results, model, df_lookup, dictionary, tfidf):
     words = word_tokenize(query)
     words = [word.lower() for word in words if word.isalpha()]
     rejoined = ' '.join(words)
@@ -88,4 +88,5 @@ def search_log(query, model, df_lookup, dictionary, tfidf):
     df_results = df_results.sort_values(by=['cosine_similarity'], ascending=False)
     # cast cosine_similarity to string for display
     df_results['cosine_similarity'] = df_results.apply(lambda x: str(x['cosine_similarity']), axis=1)
+    df_results = df_results.head(num_results)
     return df_results

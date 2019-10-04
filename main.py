@@ -84,8 +84,7 @@ def update_search_results(query, n_clicks):
     if not (ctx.triggered and input_id == 'search_log_button'):
         raise PreventUpdate
     else:
-        df_results = functions.search_log(query, model_word, df_subjects, dictionary, tfidf)
-        df_results = df_results.head()
+        df_results = functions.search_log(query, 5, model_word, df_subjects, dictionary, tfidf)
         rows = []
         for i in range(len(df_results)):
             row = []
