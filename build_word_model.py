@@ -22,11 +22,11 @@ for s in subject_sentences:
 # Prepare request body
 requestbody_sentences = []
 for i in df.index:
-  l = df.iloc[i]['requestbody_prepared']
-  requestbody_sentences = requestbody_sentences + l
-  tokenized_requestbodies = []
+    l = df.iloc[i]['requestbody_prepared']
+    requestbody_sentences = requestbody_sentences + l
+    tokenized_requestbodies = []
 for s in requestbody_sentences:
-  tokenized_requestbodies.append(word_tokenize(s))
+    tokenized_requestbodies.append(word_tokenize(s))
 
 # Put tokenized subjects and request bodies together
 all_tokenized = tokenized_subjects + tokenized_requestbodies

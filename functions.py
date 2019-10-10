@@ -11,9 +11,11 @@ import config
 nltk.data.path.append(config.nltk_data_path_local)
 nltk.data.path.append(config.nltk_data_path_container)
 
+
 def extract_id(s):
     regex = re.compile(r'\d*$')
     return regex.findall(s)[0]
+
 
 def strip_element(s):
     regex = re.compile(r'<[^>]+>')
@@ -25,6 +27,7 @@ def strip_element(s):
     s = unicodedata.normalize("NFKD", s)
     return s
 
+
 def strip_response(r):
     s = ''
     for d in r:
@@ -32,27 +35,31 @@ def strip_response(r):
             s += strip_element(v)
     return s
 
+
 # Prepare text: make lowercase, remove punctuation, remove stopwords
 stop_words = set(stopwords.words('english'))
+
 
 def prepare_text(s):
     words = word_tokenize(s)
     words = [word.lower() for word in words if word.isalpha()]
-    filtered_sentence = [] 
-    for w in words: 
-        if w not in stop_words: 
+    filtered_sentence = []
+    for w in words:
+        if w not in stop_words:
             filtered_sentence.append(w)
     rejoined_sentence = ' '
     rejoined_sentence = rejoined_sentence.join(filtered_sentence)
     return rejoined_sentence
 
+
 def generate_request_preview(request, num_words):
-  request = strip_element(request)
-  l = request.split(' ', num_words)
-  l = l[0:num_words]
-  preview = ' '.join(l)
-  preview = preview + '...'
-  return preview
+    request = strip_element(request)
+    l = request.split(' ', num_words)
+    l = l[0:num_words]
+    preview = ' '.join(l)
+    preview = preview + '...'
+    return preview
+
 
 # TF-IDF weighted average of the vectors of the input words
 def sent2vec(sentence, model, dictionary, tfidf):
@@ -74,11 +81,12 @@ def sent2vec(sentence, model, dictionary, tfidf):
     # Need to loop through because these lists are ordered differently
     weighted_vec_list = []
     for tup in weighting:
-      word = dictionary[tup[0]]
-      weight = tup[1]
-      weighted_vec = model[word] * weight
-      weighted_vec_list.append(weighted_vec)
+        word = dictionary[tup[0]]
+        weight = tup[1]
+        weighted_vec = model[word] * weight
+        weighted_vec_list.append(weighted_vec)
     return np.mean(weighted_vec_list, axis=0)
+
 
 def search_log(query, num_results, model, df_lookup, dictionary, tfidf):
     words = word_tokenize(query)
@@ -86,9 +94,16 @@ def search_log(query, num_results, model, df_lookup, dictionary, tfidf):
     rejoined = ' '.join(words)
     query_vec = sent2vec(rejoined, model, dictionary, tfidf)
     df_results = df_lookup[['subject', 'request_preview', 'url', 'id']]
-    df_results['cosine_similarity'] = df_lookup.apply(lambda x: cosine_similarity(query_vec.reshape(1, -1), x['sentence_embedding'].reshape(1, -1)), axis=1)
+    df_results['cosine_similarity'] = df_lookup.apply(
+        lambda x: cosine_similarity(
+            query_vec.reshape(1, -1), x['sentence_embedding'].reshape(1, -1)
+        ),
+        axis=1,
+    )
     df_results = df_results.sort_values(by=['cosine_similarity'], ascending=False)
     # cast cosine_similarity to string for display
-    df_results['cosine_similarity'] = df_results.apply(lambda x: str(x['cosine_similarity']), axis=1)
+    df_results['cosine_similarity'] = df_results.apply(
+        lambda x: str(x['cosine_similarity']), axis=1
+    )
     df_results = df_results.head(num_results)
     return df_results
