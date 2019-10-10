@@ -23,7 +23,7 @@ dictionary = gensim.corpora.Dictionary([list(model.wv.vocab.keys())])
 df_lookup = pd.read_pickle(config.search_lookup_filepath)
 
 
-@app.get('/fois/search/')
+@app.get('/fois/search')
 def search_fois(
     q: str = Query(
         default=None,
@@ -37,7 +37,7 @@ def search_fois(
     return results
 
 
-@app.post('/fois/search/')
+@app.post('/fois/search')
 def search_fois_post(
     foi_query: FoiQuery = Body(
         ...,
