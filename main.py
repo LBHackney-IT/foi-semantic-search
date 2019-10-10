@@ -1,124 +1,45 @@
-# -*- coding: utf-8 -*-
-
-import dash
-from dash.dependencies import Input, Output
-import dash_core_components as dcc
-import dash_html_components as html
-import flask
-import pandas as pd
-import plotly.graph_objs as go
+from fastapi import FastAPI, Query, Body
 import functions
 import config
-import plotly.express as px
 import gensim
-import nltk
-from nltk.tokenize import word_tokenize
-from dash.exceptions import PreventUpdate
-import functions
+import pandas as pd
+from pydantic import BaseModel, Schema
 
-nltk.data.path.append("./nltk_data/")
+app = FastAPI(
+    title="Hackney FOI semantic search API",
+    description="Search the London Borough of Hackney's public Freedom of Information disclosure log.",
+    version="1",
+)
 
-server = flask.Flask(__name__)
-app = dash.Dash(__name__, server=server)
+# Need this to accept request bodies
+class FoiQuery(BaseModel):
+    query: str
+    results: int = Schema(default=5, description='Number of results to return', max=50)
 
-# vocab with dimensionality reduction and most similar already calculated
-df = pd.read_pickle(config.viz_df_filepath)
-# need to index on the vocab but also need to pass plotly a column
-# name to label the scatterplot, so will duplicate the vocab field
-# until can find a better way
-df['index'] = df['vocab']
-df = df.set_index('index')
-
-# Word2vec model
-model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
-
+model = gensim.models.Word2Vec.load(config.word_model_filepath)
 tfidf = gensim.models.TfidfModel.load(config.tfidf_filepath)
-dictionary = gensim.corpora.Dictionary([list(model_word.wv.vocab.keys())])
+dictionary = gensim.corpora.Dictionary([list(model.wv.vocab.keys())])
+df_lookup = pd.read_pickle(config.search_lookup_filepath)
 
-df_subjects = pd.read_pickle(config.search_lookup_filepath)
-
-layout_children = [
-    html.H2('FOI search/similarity'),
-    html.Div("Based on a word2vec model, corpus is request subject lines from Hackney's disclosure log"),
-    dcc.Graph(id="graph", style={"width": "75%", "display": "inline-block"}),
-    html.H5('Most similar to:'),
-    dcc.Dropdown(
-        id='word-dropdown',
-        placeholder='Search words in model vocabulary...',
-        options=[{'value': i, 'label': i} for i in df.index],
-        multi=False
+@app.get('/fois/search/')
+def search_fois(
+        q: str = Query(
+            default=None,
+            title='FOI search query',
+            description='Can be a simple keyword-style query, a sentence, or a complete FOI request consiting of multiple sentences. This is limited by max URL length. Post your query in a request body instead to avoid this limitation.',
         ),
-    html.Div(id='most-similar'),
-    html.Br(),
-    html.Hr(),
-    html.H5('What do you want to know?'),
-    html.Div('Returns suggestions from the disclosure log. Based on cosine similarity of vectors of submitted sentence vs request subjects'),
-    html.Br(),
-    dcc.Textarea(
-        id='search-textarea',
-        placeholder='Your request...',
-        rows=50,
-        style={'width': '50%'}   
-    ),
-    html.Br(),
-    html.Button('Submit', id='search_log_button'),
-    html.Br(),
-    html.Div(id='results-list'),
-    html.Br(),
-    html.Br(),
-    html.Hr(),
-]
-
-app.layout = html.Div(children=layout_children)
-
-@app.callback(
-    Output('results-list', 'children'),
-    [Input('search-textarea', 'value'),
-     Input('search_log_button', 'n_clicks')]
-)
-def update_search_results(query, n_clicks):
-    if not n_clicks:
-        return html.Div()
-    ctx = dash.callback_context
-    input_id = ctx.triggered[0]['prop_id'].split('.')[0]
-    if not (ctx.triggered and input_id == 'search_log_button'):
-        raise PreventUpdate
-    else:
-        df_results = functions.search_log(query, 5, model_word, df_subjects, dictionary, tfidf)
-        rows = []
-        for i in range(len(df_results)):
-            row = []
-            for col in df_results.columns:
-                value = df_results.iloc[i][col]
-                if col == 'url':
-                    cell = html.Td(html.A(href=value, target="_blank", children=value))
-                else:
-                    cell = html.Td(children=value)
-                row.append(cell)
-            rows.append(html.Tr(row))
-        return html.Table(
-        # Header
-        [html.Tr([html.Th(col) for col in df_results.columns])] +
-        rows
+        results: int = Query(
+            default=5,
+            description='Number of results to return.',
+            max=50,
         )
+    ):
+    df_results = functions.search_log(q, results, model, df_lookup, dictionary, tfidf)
+    results = df_results.to_dict(orient='records')
+    return results
 
-@app.callback(
-    Output('most-similar', 'children'),
-    [Input('word-dropdown', 'value')]
-)
-def update_most_similar(chosen_word):
-    if chosen_word:
-        similar = df.loc[chosen_word]['most_similar']
-        return html.Table([html.Tr(html.Td(' '.join(map(str, i)))) for i in similar])
-
-@app.callback(
-    Output("graph", "figure"),
-    [Input('word-dropdown', 'value')]
-)
-def make_figure(chosen_word):
-    fig = px.scatter(data_frame=df, x='x', y='y', text='vocab')
-    return fig
-
-if __name__ == '__main__':
-    app.run_server(debug=True)
-    #app.run_server(debug=False, port=8080)
+@app.post('/fois/search/')
+def search_fois_post(foi_query: FoiQuery = Body(..., example = {'query': 'What is the cost of biscuits at all councilor meetings in 2017?', 'results': 5,})):
+    df_results = functions.search_log(foi_query.query, foi_query.results, model, df_lookup, dictionary, tfidf)
+    results = df_results.to_dict(orient='records')
+    return results
