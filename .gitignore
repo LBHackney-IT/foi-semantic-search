@@ -1,3 +1,4 @@
+.env
 __pycache__/
 *.bat
 df_min.pickle
@@ -10,4 +11,3 @@ app.yaml
 /assets/g-analytics.js
 /foi-model-env/
 .vscode
-
