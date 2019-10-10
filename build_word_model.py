@@ -7,8 +7,8 @@ import functions
 import config
 import pickle
 
-nltk.download('stopwords')
-nltk.download('punkt')
+nltk.data.path.append(config.nltk_data_path_local)
+nltk.data.path.append(config.nltk_data_path_container)
 
 filepath = config.data_path + config.preprocessed_filename
 df = pd.read_pickle(filepath)

@@ -6,8 +6,10 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from sklearn.metrics.pairwise import cosine_similarity
+import config
 
-nltk.data.path.append("./nltk_data/")
+nltk.data.path.append(config.nltk_data_path_local)
+nltk.data.path.append(config.nltk_data_path_container)
 
 def extract_id(s):
     regex = re.compile(r'\d*$')

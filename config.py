@@ -1,4 +1,6 @@
 data_path = '../infreemation-data/'
+nltk_data_path_local = "./nltk_data/"
+nltk_data_path_container = "/app/nltk_data/"
 model_path = 'models/'
 lookups_path = 'search-lookups/'
 viz_path = 'viz/'
