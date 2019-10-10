@@ -32,6 +32,9 @@ df = df.set_index('index')
 # Word2vec model
 model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
 
+tfidf = gensim.models.TfidfModel.load(config.tfidf_filepath)
+dictionary = gensim.corpora.Dictionary([list(model_word.wv.vocab.keys())])
+
 df_subjects = pd.read_pickle(config.search_lookup_filepath)
 
 layout_children = [
@@ -81,15 +84,14 @@ def update_search_results(query, n_clicks):
     if not (ctx.triggered and input_id == 'search_log_button'):
         raise PreventUpdate
     else:
-        df_results = functions.search_log(query, model_word, df_subjects)
-        df_results = df_results.head()
+        df_results = functions.search_log(query, 5, model_word, df_subjects, dictionary, tfidf)
         rows = []
         for i in range(len(df_results)):
             row = []
             for col in df_results.columns:
                 value = df_results.iloc[i][col]
                 if col == 'url':
-                    cell = html.Td(html.A(href=value, children=value))
+                    cell = html.Td(html.A(href=value, target="_blank", children=value))
                 else:
                     cell = html.Td(children=value)
                 row.append(cell)

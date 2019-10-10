@@ -3,6 +3,8 @@ __pycache__/
 df_min.pickle
 df_viz.pickle
 /models/
+/search-lookups/
+/viz/
 .gcloudignore
 app.yaml
 /assets/g-analytics.js

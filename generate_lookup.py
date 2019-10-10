@@ -3,8 +3,11 @@ import functions
 import config
 import gensim
 
-# Load model
-model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
+# Load models
+model = gensim.models.Word2Vec.load(config.word_model_filepath)
+tfidf = gensim.models.TfidfModel.load(config.tfidf_filepath)
+
+dictionary = gensim.corpora.Dictionary([list(model.wv.vocab.keys())])
 
 df = pd.read_pickle(config.preprocessed_filepath)
 
@@ -20,7 +23,7 @@ df['requestbody_concatenated'] = df.apply(lambda x: ' '.join(x['requestbody_prep
 df['subject_requestbody'] = df.apply(lambda x: x['subject_prepared']  + ' ' +  x['requestbody_concatenated'], axis=1)
 
 # Generate sentence embeddings
-df['sentence_embedding'] = df.apply(lambda x: functions.sent2vec(sentence=x['subject_requestbody'],model=model_word), axis=1)
+df['sentence_embedding'] = df.apply(lambda x: functions.sent2vec(sentence=x['subject_requestbody'],model=model, dictionary=dictionary, tfidf=tfidf), axis=1)
 
 # Store the dataframe
 df.reset_index(drop=True).to_pickle(config.search_lookup_filepath)
