@@ -8,7 +8,6 @@ preprocessed_filename = 'infreemation-preprocessed.pickle'
 tokenized_filename = 'tokenized.pickle'
 tfidf_filename = 'tfidf.model'
 search_lookup_filename = '03-df-lookup-subjects-requestbodies-tfidf.pickle'
-#sentence_embeddings_lookup_filename = 'sentence_embeddings_lookup.pickle'
 word_model_filename = '02-word2vec-subjects-requestbodies.model'
 viz_df_filename = '02-df-viz.pickle'
 preprocessed_filepath = data_path + preprocessed_filename
