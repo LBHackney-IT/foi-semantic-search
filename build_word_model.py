@@ -10,8 +10,7 @@ import pickle
 nltk.data.path.append(config.nltk_data_path_local)
 nltk.data.path.append(config.nltk_data_path_container)
 
-filepath = config.data_path + config.preprocessed_filename
-df = pd.read_pickle(filepath)
+df = pd.read_pickle(config.preprocessed_filepath)
 
 # Prepare subject field. We'll treat these as single sentences (most are).
 subject_sentences = df['subject_prepared'].tolist()
