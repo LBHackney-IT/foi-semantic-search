@@ -1,4 +1,4 @@
-data_path = '../infreemation-data/'
+data_path = 'data/infreemation/'
 nltk_data_path_local = "./nltk_data/"
 nltk_data_path_container = "/app/nltk_data/"
 model_path = 'models/'
