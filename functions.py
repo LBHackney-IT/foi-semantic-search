@@ -21,8 +21,8 @@ def strip_element(s):
     regex = re.compile(r'<[^>]+>')
     s = html.unescape(s)
     s = regex.sub('', s)
-    s = s.replace('\\r\\n', '')
-    s = s.replace('\t', '')
+    s = s.replace('\\r\\n', ' ')
+    s = s.replace('\t', ' ')
     s = html.unescape(s)
     s = unicodedata.normalize("NFKD", s)
     return s
