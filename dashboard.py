@@ -56,7 +56,7 @@ layout_children = [
     html.Hr(),
     html.H5('What do you want to know?'),
     html.Div(
-        'Returns suggestions from the disclosure log. Based on cosine similarity of vectors of submitted text vs requests'
+        'Returns suggestions from the disclosure log. Based on cosine similarity of vectors of submitted text vs requests. These sentence/document vectors are a TF-IDF weighted average of the vectors of the constituent words.'
     ),
     html.Br(),
     dcc.Textarea(
