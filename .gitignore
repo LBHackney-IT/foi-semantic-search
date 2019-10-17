@@ -1,8 +1,7 @@
 .env
 __pycache__/
 *.bat
-df_min.pickle
-df_viz.pickle
+/data/
 /models/
 /search-lookups/
 /viz/
