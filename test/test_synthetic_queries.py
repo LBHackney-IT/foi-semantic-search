@@ -1,6 +1,6 @@
 import sys
 import pytest
-from synthetic_queries import queries
+from test_data import queries
 import gensim
 import pandas as pd
 import functions
