@@ -14,7 +14,9 @@ nltk.data.path.append(config.nltk_data_path_container)
 
 def extract_id(s):
     regex = re.compile(r'\d*$')
-    return regex.findall(s)[0]
+    _id = regex.findall(s)[0]
+    _id = int(_id)
+    return _id
 
 
 def strip_element(s):
