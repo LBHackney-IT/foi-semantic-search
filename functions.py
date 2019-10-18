@@ -34,7 +34,7 @@ def strip_response(response):
     text = ''
     for dictionary in response:
         for k, v in sorted(dictionary.items()):
-            text += strip_element(v)
+            text += strip_element(v) + ' '
     return text
 
 
