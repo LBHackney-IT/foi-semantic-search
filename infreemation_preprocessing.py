@@ -14,9 +14,10 @@ def prepare_requestbody(s):
     return l
 
 
-def main():
+def main(input_data="all"):
     # Read json files from infreemation reporting API, new ones added
     # periodically
+    # data: "all" or "latest"
     base_path = config.data_path
     filename = 'infreemation-dump-'
     df = pd.DataFrame()
@@ -59,4 +60,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+  # handle command line args here
+  main()

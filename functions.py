@@ -14,34 +14,36 @@ nltk.data.path.append(config.nltk_data_path_container)
 
 def extract_id(s):
     regex = re.compile(r'\d*$')
-    return regex.findall(s)[0]
+    _id = regex.findall(s)[0]
+    _id = int(_id)
+    return _id
 
 
-def strip_element(s):
+def strip_element(text):
     regex = re.compile(r'<[^>]+>')
-    s = html.unescape(s)
-    s = regex.sub('', s)
-    s = s.replace('\\r\\n', ' ')
-    s = s.replace('\t', ' ')
-    s = html.unescape(s)
-    s = unicodedata.normalize("NFKD", s)
-    return s
+    text = html.unescape(text)
+    text = regex.sub('', text)
+    text = text.replace('\\r\\n', ' ')
+    text = text.replace('\t', ' ')
+    text = html.unescape(text)
+    text = unicodedata.normalize("NFKD", text)
+    return text
 
 
-def strip_response(r):
-    s = ''
-    for d in r:
-        for k, v in d.items():
-            s += strip_element(v)
-    return s
+def strip_response(response):
+    text = ''
+    for dictionary in response:
+        for k, v in sorted(dictionary.items()):
+            text += strip_element(v) + ' '
+    return text
 
 
 # Prepare text: make lowercase, remove punctuation, remove stopwords
 stop_words = set(stopwords.words('english'))
 
 
-def prepare_text(s):
-    words = word_tokenize(s)
+def prepare_text(text):
+    words = word_tokenize(text)
     words = [word.lower() for word in words if word.isalpha()]
     filtered_sentence = []
     for w in words:
@@ -54,9 +56,9 @@ def prepare_text(s):
 
 def generate_request_preview(request, num_words):
     request = strip_element(request)
-    l = request.split(' ', num_words)
-    l = l[0:num_words]
-    preview = ' '.join(l)
+    word_list = request.split(' ', num_words)
+    word_list = word_list[0:num_words]
+    preview = ' '.join(word_list)
     preview = preview + '...'
     return preview
 
