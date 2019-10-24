@@ -14,7 +14,7 @@ def prepare_requestbody(s):
     return l
 
 
-def main(data="all"):
+def main(input_data="all"):
     # Read json files from infreemation reporting API, new ones added
     # periodically
     # data: "all" or "latest"
