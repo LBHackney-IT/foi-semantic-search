@@ -46,7 +46,7 @@ def main(input_data="all"):
     # Strip HTML
     for i in df.index:
         df.at[i, 'requestbody_stripped'] = functions.strip_element(
-            s=df.iloc[i]['requestbody']
+            df.iloc[i]['requestbody']
         )
     # Remove stopwords, non alpha, etc.
     df['requestbody_prepared'] = df.apply(

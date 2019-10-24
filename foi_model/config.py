@@ -1,9 +1,9 @@
-data_path = 'data/infreemation/'
-nltk_data_path_local = "./nltk_data/"
+data_path = '../data/infreemation/'
+nltk_data_path_local = "../nltk_data/"
 nltk_data_path_container = "/app/nltk_data/"
-model_path = 'models/'
-lookups_path = 'search-lookups/'
-viz_path = 'viz/'
+model_path = '../models/'
+lookups_path = '../search-lookups/'
+viz_path = '../viz/'
 preprocessed_filename = 'infreemation-preprocessed.pickle'
 tokenized_filename = '02-tokenized-without-run-togethers.pickle'
 tfidf_filename = '02-tfidf-without-run-togethers.model'
