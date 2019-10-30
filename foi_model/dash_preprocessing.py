@@ -1,7 +1,7 @@
 import gensim
 import pandas as pd
 from sklearn.manifold import TSNE
-import config
+import files
 
 # Preprocessing for the dashboard so it starts up more quickly and
 # consumes less memory -- these factors are important for deployment on
@@ -10,7 +10,7 @@ import config
 
 def main():
     # Word2vec model
-    model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
+    model_word = gensim.models.Word2Vec.load(files.word_model_filepath)
     vocab = list(model_word.wv.vocab)
 
     # Reduce vector dimensions for plotting
@@ -27,7 +27,7 @@ def main():
         lambda x: model_word.wv.most_similar(x['vocab']), axis=1
     )
 
-    df.to_pickle(config.viz_df_filepath)
+    df.to_pickle(files.viz_df_filepath)
 
 
 if __name__ == "__main__":
