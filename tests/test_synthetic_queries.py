@@ -1,4 +1,3 @@
-import sys
 import pytest
 from test_data import queries
 import gensim

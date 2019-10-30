@@ -1,4 +1,3 @@
-import pytest
 from foi_semantic_search import utils
 import test_data
 import os
