@@ -21,8 +21,8 @@ def main():
     # Prepare request body
     requestbody_sentences = []
     for i in df.index:
-        l = df.iloc[i]['requestbody_prepared']
-        requestbody_sentences = requestbody_sentences + l
+        sentence = df.iloc[i]['requestbody_prepared']
+        requestbody_sentences = requestbody_sentences + sentence
         tokenized_requestbodies = []
     for s in requestbody_sentences:
         tokenized_requestbodies.append(word_tokenize(s))
