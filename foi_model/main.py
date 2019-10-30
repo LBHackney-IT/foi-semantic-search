@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query, Body
-import functions
-import config
+import utils
+import files_config
 import gensim
 import pandas as pd
 from pydantic import BaseModel, Schema
@@ -17,10 +17,10 @@ class FoiQuery(BaseModel):
     results: int = Schema(default=5, description='Number of results to return', max=50)
 
 
-model = gensim.models.Word2Vec.load(config.word_model_filepath)
-tfidf = gensim.models.TfidfModel.load(config.tfidf_filepath)
+model = gensim.models.Word2Vec.load(files_config.word_model_filepath)
+tfidf = gensim.models.TfidfModel.load(files_config.tfidf_filepath)
 dictionary = gensim.corpora.Dictionary([list(model.wv.vocab.keys())])
-df_lookup = pd.read_pickle(config.search_lookup_filepath)
+df_lookup = pd.read_pickle(files_config.search_lookup_filepath)
 
 
 @app.get('/fois/search')
@@ -32,7 +32,7 @@ def search_fois(
     ),
     results: int = Query(default=5, description='Number of results to return.', max=50),
 ):
-    df_results = functions.search_log(q, results, model, df_lookup, dictionary, tfidf)
+    df_results = utils.search_log(q, results, model, df_lookup, dictionary, tfidf)
     results = df_results.to_dict(orient='records')
     return results
 
@@ -47,7 +47,7 @@ def search_fois_post(
         },
     )
 ):
-    df_results = functions.search_log(
+    df_results = utils.search_log(
         foi_query.query, foi_query.results, model, df_lookup, dictionary, tfidf
     )
     results = df_results.to_dict(orient='records')

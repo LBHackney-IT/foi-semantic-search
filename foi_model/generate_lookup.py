@@ -1,20 +1,20 @@
 import pandas as pd
-import functions
-import config
+import utils
+import files_config
 import gensim
 
 
 def main():
     # Load models
-    model = gensim.models.Word2Vec.load(config.word_model_filepath)
-    tfidf = gensim.models.TfidfModel.load(config.tfidf_filepath)
+    model = gensim.models.Word2Vec.load(files_config.word_model_filepath)
+    tfidf = gensim.models.TfidfModel.load(files_config.tfidf_filepath)
 
     dictionary = gensim.corpora.Dictionary([list(model.wv.vocab.keys())])
 
-    df = pd.read_pickle(config.preprocessed_filepath)
+    df = pd.read_pickle(files_config.preprocessed_filepath)
 
     df['request_preview'] = df.apply(
-        lambda x: functions.generate_request_preview(x['requestbody'], 25), axis=1
+        lambda x: utils.generate_request_preview(x['requestbody'], 25), axis=1
     )
 
     # Keep only what we need from the dataframe
@@ -41,7 +41,7 @@ def main():
 
     # Generate sentence embeddings
     df['sentence_embedding'] = df.apply(
-        lambda x: functions.sent2vec(
+        lambda x: utils.sent2vec(
             sentence=x['subject_requestbody'],
             model=model,
             dictionary=dictionary,
@@ -51,7 +51,7 @@ def main():
     )
 
     # Store the dataframe
-    df.reset_index(drop=True).to_pickle(config.search_lookup_filepath)
+    df.reset_index(drop=True).to_pickle(files_config.search_lookup_filepath)
 
 
 if __name__ == "__main__":
