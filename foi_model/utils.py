@@ -6,10 +6,10 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from sklearn.metrics.pairwise import cosine_similarity
-import config
+import files_config
 
-nltk.data.path.append(config.nltk_data_path_local)
-nltk.data.path.append(config.nltk_data_path_container)
+nltk.data.path.append(files_config.nltk_data_path_local)
+nltk.data.path.append(files_config.nltk_data_path_container)
 
 
 def extract_id(s):
