@@ -10,3 +10,4 @@ app.yaml
 /assets/g-analytics.js
 /foi-model-env/
 .vscode
+.pytest_cache
