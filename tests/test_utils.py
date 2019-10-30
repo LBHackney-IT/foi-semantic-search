@@ -26,4 +26,3 @@ def test_strip_response():
         utils.strip_response(test_data.strip_response_test_input)
         == test_data.strip_response_expected_output
     )
-
