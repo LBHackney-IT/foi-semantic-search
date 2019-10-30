@@ -1,9 +1,7 @@
 import pandas as pd
 import nltk
 from nltk.tokenize import word_tokenize
-from nltk.tokenize import sent_tokenize
 import gensim
-import utils
 import files_config
 import pickle
 
