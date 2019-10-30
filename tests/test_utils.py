@@ -1,11 +1,11 @@
 import pytest
-from foi_model import utils
+from foi_semantic_search import utils
 import test_data
 import os
 import sys
 
 myPath = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, myPath + '/../foi_model/')
+sys.path.insert(0, myPath + '/../foi_semantic_search/')
 
 
 def test_extract_ids():
