@@ -7,23 +7,23 @@ import dash_html_components as html
 import flask
 import pandas as pd
 import plotly.graph_objs as go
-import functions
-import config
+import utils
+import files_config
 import plotly.express as px
 import gensim
 import nltk
 from nltk.tokenize import word_tokenize
 from dash.exceptions import PreventUpdate
-import functions
+import utils
 
-nltk.data.path.append(config.nltk_data_path_local)
-nltk.data.path.append(config.nltk_data_path_container)
+nltk.data.path.append(files_config.nltk_data_path_local)
+nltk.data.path.append(files_config.nltk_data_path_container)
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
 
 # vocab with dimensionality reduction and most similar already calculated
-df = pd.read_pickle(config.viz_df_filepath)
+df = pd.read_pickle(files_config.viz_df_filepath)
 # need to index on the vocab but also need to pass plotly a column
 # name to label the scatterplot, so will duplicate the vocab field
 # until can find a better way
@@ -31,12 +31,12 @@ df['index'] = df['vocab']
 df = df.set_index('index')
 
 # Word2vec model
-model_word = gensim.models.Word2Vec.load(config.word_model_filepath)
+model_word = gensim.models.Word2Vec.load(files_config.word_model_filepath)
 
-tfidf = gensim.models.TfidfModel.load(config.tfidf_filepath)
+tfidf = gensim.models.TfidfModel.load(files_config.tfidf_filepath)
 dictionary = gensim.corpora.Dictionary([list(model_word.wv.vocab.keys())])
 
-df_subjects = pd.read_pickle(config.search_lookup_filepath)
+df_subjects = pd.read_pickle(files_config.search_lookup_filepath)
 
 layout_children = [
     html.H2('FOI search/similarity'),
@@ -89,7 +89,7 @@ def update_search_results(query, n_clicks):
     if not (ctx.triggered and input_id == 'search_log_button'):
         raise PreventUpdate
     else:
-        df_results = functions.search_log(
+        df_results = utils.search_log(
             query, 5, model_word, df_subjects, dictionary, tfidf
         )
         rows = []
