@@ -1,0 +1,8 @@
+runtime: python37
+
+service: foi-model
+
+instance_class: F4
+
+# 4 workers recommended for instance class F4
+entrypoint: gunicorn --workers 4 -b :$PORT dashboard:server
