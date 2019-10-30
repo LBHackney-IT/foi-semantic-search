@@ -6,7 +6,6 @@ __pycache__/
 /search-lookups/
 /viz/
 .gcloudignore
-app.yaml
 /assets/g-analytics.js
 /foi-model-env/
 .vscode
