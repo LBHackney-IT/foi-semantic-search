@@ -7,5 +7,5 @@ RUN apt-get --assume-yes install build-essential
 COPY requirements.txt /
 RUN pip install -r /requirements.txt
 COPY . /app/
-WORKDIR /app/foi_model/
-ENV APP_MODULE="foi_model.main:app"
+WORKDIR /app/foi_semantic_search/
+ENV APP_MODULE="foi_semantic_search.main:app"

@@ -3,8 +3,8 @@ import pytest
 from test_data import queries
 import gensim
 import pandas as pd
-from foi_model import utils
-from foi_model import files_config
+from foi_semantic_search import utils
+from foi_semantic_search import files_config
 
 # put into fixture?
 model = gensim.models.Word2Vec.load(files_config.word_model_filepath)
